@@ -6,9 +6,9 @@
 
 ## 构建与运行
 
-​`bash
-make build   # 编译到 bin/taskhive
-make test    # 带 -race 跑测试
-make lint    # golangci-lint 检查
-make run     # 构建并打印版本
-​`
+```bash
+make build # 编译到 bin/taskhive
+make test # 带 -race 跑测试
+make lint # golangci-lint 检查
+make run # 构建并打印版本
+```
