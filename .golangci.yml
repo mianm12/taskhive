@@ -1,0 +1,16 @@
+version: "2"
+
+linters:
+  default: standard # 默认启用的 linters 集合
+  enable:
+    - revive # 风格检查,golint 的继任者
+    - misspell # 拼写错误
+  settings:
+    revive:
+      rules:
+        - name: exported # 强制导出的标识符写文档注释
+
+formatters:
+  enable:
+    - gofumpt # 比 gofmt 更严格的格式化
+    - goimports # 整理 import 分组
