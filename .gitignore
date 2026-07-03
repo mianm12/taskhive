@@ -1,0 +1,33 @@
+# 如果您倾向于使用允许名单模板而非拒绝名单，请参考社区模板：
+# https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
+#
+# 构建产物 / 二进制文件
+/bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# 测试二进制文件，使用 `go test -c` 编译”
+*.test
+
+# 代码覆盖率配置文件及其他测试产物”
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# 依赖目录（移除下方注释以包含它）
+# vendor/
+
+# 工作区文件
+go.work
+go.work.sum
+
+# 环境文件
+.env
+
+# Editor/IDE
+# .idea/
+# .vscode/
