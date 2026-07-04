@@ -1,7 +1,7 @@
-# 如果您倾向于使用允许名单模板而非拒绝名单，请参考社区模板：
+# 本项目使用拒绝名单模板。若倾向白名单模板，参考社区模板：
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
-#
-# 构建产物 / 二进制文件
+
+# ── 构建与二进制产物 ──
 /bin/
 *.exe
 *.exe~
@@ -9,25 +9,43 @@
 *.so
 *.dylib
 
-# 测试二进制文件，使用 `go test -c` 编译”
+# ── 测试与覆盖率产物 ──
+## go test -c 编译出的测试二进制
 *.test
-
-# 代码覆盖率配置文件及其他测试产物”
 *.out
 coverage.*
 *.coverprofile
 profile.cov
 
-# 依赖目录（移除下方注释以包含它）
+# ── Go 模块与工作区 ──
+## 取消下一行注释以忽略 vendor 目录
 # vendor/
-
-# 工作区文件
 go.work
 go.work.sum
 
-# 环境文件
+# ── 环境与密钥 ──
 .env
+.env.*
+!.env.example
 
-# Editor/IDE
+# ── 编辑器 / IDE ──
 # .idea/
 # .vscode/
+
+# ── macOS ──
+## 通用设置
+.DS_Store
+.AppleDouble
+.LSOverride
+## 桌面自定义图标文件（名称以回车结尾）
+Icon
+## 资源分叉（resource fork）
+._*
+## 卷根目录下可能出现的文件和目录
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
