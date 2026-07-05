@@ -30,7 +30,7 @@ go.work.sum
 
 # ── 编辑器 / IDE ──
 # .idea/
-# .vscode/
+.vscode/
 
 # ── macOS ──
 ## 通用设置
