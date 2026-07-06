@@ -3,9 +3,9 @@
 散落在代码里的 TODO 汇总总账。阶段末或对应阶段回来逐条清理。
 代码里就地用 `// TODO(stage-N): ...` 标注，这里记详细版。
 
-## 阶段 1 内待清
+## 阶段 1 已清
 
-- [ ] 用 cobra 替换 `cmd/taskhive/main.go` 里手写的 `os.Args[1] == "version"` 判断（做 CLI 那一站）
+- [x] 用 cobra 替换 `cmd/taskhive/main.go` 里手写的 `os.Args[1] == "version"` 判断（做 CLI 那一站）
 
 ## 阶段 3（并发）回来清
 
