@@ -50,6 +50,9 @@ func Run(t *task.Task, cfg Config) Result {
 
 // runOnce 执行单次命令,应用超时控制。
 func runOnce(t *task.Task, timeout time.Duration) Result {
+	// TODO(stage-3): sh -c 启动的子进程在 Linux 上不随父进程被杀，
+	// 超时对 sleep 这类会失效。需改用进程组(Setpgid) + syscall.Kill(-pid)
+	// + goroutine/select 控制,依赖阶段 3 并发知识。
 	start := time.Now()
 
 	ctx := context.Background()
