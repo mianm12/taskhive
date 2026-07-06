@@ -39,12 +39,37 @@ func LoadTasks(path string) ([]task.Task, error) {
 func RunAll(tasks []task.Task) []executor.Result {
 	results := make([]executor.Result, 0, len(tasks))
 	for i := range tasks {
+		if err := tasks[i].Transition(task.StatusRunning); err != nil {
+			// FIXME(stage-2): 迁移失败时命令并未执行，用 executor.Result 表达"未执行"
+			// 是语义错配，Err 也未被报表消费。待阶段 2 有完整任务模型后重构结果表达。
+			res := executor.Result{
+				ExitCode: -1,
+				Err:      err,
+			}
+			results = append(results, res)
+
+			continue
+		}
+
 		cfg := executor.Config{
 			Timeout:    tasks[i].Timeout,
 			MaxRetries: tasks[i].MaxRetry,
 			RetryDelay: 500 * time.Millisecond,
 		}
 		res := executor.Run(&tasks[i], cfg)
+
+		nextStatus := task.StatusFailed
+		if res.ExitCode == 0 {
+			nextStatus = task.StatusSucceeded
+		}
+
+		// 此处 Status 必为 Running(上面迁移失败已 continue),
+		// Running → 终态在状态机中一定合法。若这里失败,说明不变量被破坏,
+		// 是代码 bug 而非可预期错误,直接 panic 以便立即暴露。
+		if err := tasks[i].Transition(nextStatus); err != nil {
+			panic(fmt.Sprintf("unreachable: running task cannot transition to %s: %v", nextStatus, err))
+		}
+
 		results = append(results, res)
 	}
 	return results
