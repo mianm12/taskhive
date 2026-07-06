@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"testing"
@@ -34,6 +35,9 @@ func TestLoadTasks(t *testing.T) {
 	if tasks[1].MaxRetry != 2 {
 		t.Errorf("task[1].MaxRetry = %d, want 2", tasks[1].MaxRetry)
 	}
+	if tasks[0].Status != task.StatusPending {
+		t.Errorf("task[0].Status = %q, want %q", tasks[0].Status, task.StatusPending)
+	}
 }
 
 func TestLoadTasks_FileNotFound(t *testing.T) {
@@ -53,6 +57,40 @@ func TestLoadTasks_InvalidJSON(t *testing.T) {
 	_, err := LoadTasks(path)
 	if err == nil {
 		t.Fatal("解析非法 JSON 应报错,却得到 nil")
+	}
+}
+
+func TestLoadTasks_InvalidTaskData(t *testing.T) {
+	tests := []struct {
+		name    string
+		content string
+		wantErr error
+	}{
+		{
+			name:    "negative timeout",
+			content: `[{"id": "t1", "command": "echo hi", "timeout": -1}]`,
+			wantErr: task.ErrInvalidTimeout,
+		},
+		{
+			name:    "negative max retry",
+			content: `[{"id": "t1", "command": "echo hi", "max_retry": -1}]`,
+			wantErr: task.ErrInvalidMaxRetry,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			path := filepath.Join(dir, "tasks.json")
+			if err := os.WriteFile(path, []byte(tt.content), 0o644); err != nil {
+				t.Fatalf("写测试文件失败: %v", err)
+			}
+
+			_, err := LoadTasks(path)
+			if !errors.Is(err, tt.wantErr) {
+				t.Fatalf("LoadTasks error = %v, want %v", err, tt.wantErr)
+			}
+		})
 	}
 }
 
