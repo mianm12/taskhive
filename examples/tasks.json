@@ -1,0 +1,28 @@
+[
+    {
+        "id": "t1",
+        "name": "打印问候",
+        "command": "echo hello world"
+    },
+    {
+        "id": "t2",
+        "name": "查看日期",
+        "command": "date"
+    },
+    {
+        "id": "t3",
+        "name": "故意失败",
+        "command": "exit 1",
+        "max_retry": 2
+    },
+    {
+        "id": "t4",
+        "name": "列目录",
+        "command": "ls -la"
+    },
+    {
+        "id": "t5",
+        "name": "找不到的命令",
+        "command": "this_cmd_does_not_exist"
+    }
+]
