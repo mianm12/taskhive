@@ -96,8 +96,8 @@ func TestLoadTasks_InvalidTaskData(t *testing.T) {
 
 func TestRunAll(t *testing.T) {
 	tasks := []task.Task{
-		{ID: "t1", Name: "成功", Command: "echo ok"},
-		{ID: "t2", Name: "失败", Command: "exit 1"},
+		{ID: "t1", Name: "成功", Command: "echo ok", Status: task.StatusPending},
+		{ID: "t2", Name: "失败", Command: "exit 1", Status: task.StatusPending},
 	}
 
 	results := RunAll(tasks)
@@ -108,7 +108,37 @@ func TestRunAll(t *testing.T) {
 	if results[0].ExitCode != 0 {
 		t.Errorf("task1 退出码 = %d, want 0", results[0].ExitCode)
 	}
+	if tasks[0].Status != task.StatusSucceeded {
+		t.Errorf("task1 状态 = %q, want %q", tasks[0].Status, task.StatusSucceeded)
+	}
 	if results[1].ExitCode != 1 {
 		t.Errorf("task2 退出码 = %d, want 1", results[1].ExitCode)
+	}
+	if tasks[1].Status != task.StatusFailed {
+		t.Errorf("task2 状态 = %q, want %q", tasks[1].Status, task.StatusFailed)
+	}
+}
+
+func TestRunAll_InvalidTransitionDoesNotExecute(t *testing.T) {
+	tasks := []task.Task{
+		{ID: "t1", Name: "已完成", Command: "echo should-not-run", Status: task.StatusSucceeded},
+	}
+
+	results := RunAll(tasks)
+
+	if len(results) != 1 {
+		t.Fatalf("结果数 = %d, want 1", len(results))
+	}
+	if !errors.Is(results[0].Err, task.ErrInvalidTransition) {
+		t.Fatalf("error = %v, want %v", results[0].Err, task.ErrInvalidTransition)
+	}
+	if results[0].ExitCode != -1 {
+		t.Errorf("exit code = %d, want -1", results[0].ExitCode)
+	}
+	if results[0].Attempts != 0 {
+		t.Errorf("attempts = %d, want 0", results[0].Attempts)
+	}
+	if tasks[0].Status != task.StatusSucceeded {
+		t.Errorf("状态 = %q, want %q", tasks[0].Status, task.StatusSucceeded)
 	}
 }
