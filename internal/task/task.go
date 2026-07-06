@@ -22,12 +22,12 @@ var (
 
 // Task 是任务领域模型。
 type Task struct {
-	ID       string        `json:"id"`
-	Name     string        `json:"name"`
-	Command  string        `json:"command"`
-	Status   Status        `json:"status"`
-	Timeout  time.Duration `json:"timeout"`
-	MaxRetry int           `json:"max_retry"`
+	ID       string   `json:"id"`
+	Name     string   `json:"name"`
+	Command  string   `json:"command"`
+	Status   Status   `json:"status"`
+	Timeout  Duration `json:"timeout"`
+	MaxRetry int      `json:"max_retry"`
 }
 
 // NewTask 创建一个已应用默认值并通过校验的 Task。
@@ -73,7 +73,7 @@ func (t *Task) Validate() error {
 		return ErrMissingCommand
 	}
 	if t.Timeout < 0 {
-		return fmt.Errorf("%w: %s", ErrInvalidTimeout, t.Timeout)
+		return fmt.Errorf("%w: %s", ErrInvalidTimeout, time.Duration(t.Timeout))
 	}
 	if t.MaxRetry < 0 {
 		return fmt.Errorf("%w: %d", ErrInvalidMaxRetry, t.MaxRetry)

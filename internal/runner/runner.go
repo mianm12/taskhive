@@ -52,7 +52,7 @@ func RunAll(tasks []task.Task) []executor.Result {
 		}
 
 		cfg := executor.Config{
-			Timeout:    tasks[i].Timeout,
+			Timeout:    tasks[i].Timeout.Std(),
 			MaxRetries: tasks[i].MaxRetry,
 			RetryDelay: 500 * time.Millisecond,
 		}

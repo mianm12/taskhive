@@ -68,7 +68,7 @@ func TestLoadTasks_InvalidTaskData(t *testing.T) {
 	}{
 		{
 			name:    "negative timeout",
-			content: `[{"id": "t1", "command": "echo hi", "timeout": -1}]`,
+			content: `[{"id": "t1", "command": "echo hi", "timeout": "-1s"}]`,
 			wantErr: task.ErrInvalidTimeout,
 		},
 		{
