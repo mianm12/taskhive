@@ -22,6 +22,16 @@ func LoadTasks(path string) ([]task.Task, error) {
 	if err := json.Unmarshal(data, &tasks); err != nil {
 		return nil, fmt.Errorf("parse the task JSON: %w", err)
 	}
+
+	for i := range tasks {
+		// 反序列化的 Task 数据没有经过 NewTask() 初始化，这里手动设置默认值
+		tasks[i].ApplyDefaults()
+
+		if err := tasks[i].Validate(); err != nil {
+			return nil, fmt.Errorf("task[%d] (id=%q) invalid: %w", i, tasks[i].ID, err)
+		}
+	}
+
 	return tasks, nil
 }
 
