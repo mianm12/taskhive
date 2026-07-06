@@ -7,6 +7,12 @@
 
 - [x] 用 cobra 替换 `cmd/taskhive/main.go` 里手写的 `os.Args[1] == "version"` 判断（做 CLI 那一站）
 
+## 阶段 2 回来清
+
+- [ ] `RunAll` 结果表达重构：`executor.Result` 无法表达“迁移失败未执行”的情况
+      （语义错配，`Err` 丢失）。方向：`runner` 层定义 `TaskResult`，用
+      `*executor.Result == nil` 表达“未执行”。见 `runner.go` 的 `FIXME`。
+
 ## 阶段 3（并发）回来清
 
 - [ ] **executor 超时杀进程的跨平台 bug**

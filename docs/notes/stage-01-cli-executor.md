@@ -12,7 +12,7 @@
 ### 语言核心
 
 - **可见性在领域模型里的应用**：
-  阶段 0 已记过基本规则，这里落到 `task` 包：`Task`、`Status`、`Transition()` 要给 `executor` 调用，所以导出；`runOnce()` 是执行器内部细节，所以保持小写。
+  阶段 0 已记过基本规则，这里落到 `task` 包：`Task`、`Status`、`Transition()` 要给 `runner` 编排执行流时调用，所以导出；`runOnce()` 是执行器内部细节，所以保持小写。
 - **自定义类型 `type Status string`**：
   创建一个底层是 string 但不等于 string 的新类型，带来类型安全
   （不能把裸字符串误传进要求 Status 的地方）。和 struct（多字段打包）是两种建模手段。
@@ -113,6 +113,9 @@
 - **执行结果用 Result struct 打包返回**：
   不返回一堆零散值，可扩展、语义清晰。
   ExitCode 记退出码、Err 只记“没跑起来”，两种失败语义分开存。
+- **状态迁移放在 runner 编排层**：
+  `executor` 只负责运行命令并返回 `Result`；`runner.RunAll()` 根据执行结果推进 `Task.Status`。
+  这样任务生命周期编排和命令执行细节保持分离。
 - **单次执行抽成 runOnce**：
   与重试循环 Run 分离，各司其职；也天然规避 defer 循环陷阱。
 - **`sh -c` 执行命令的安全权衡**：

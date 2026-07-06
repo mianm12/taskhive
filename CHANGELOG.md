@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- `internal/runner`：状态机接入串行执行流，任务执行前迁移为 `running`，执行结束后按执行结果迁移为 `succeeded` 或 `failed`。
+
+### Known Issues
+
+- `RunAll` 暂用 `executor.Result` 表达“迁移失败未执行”的情况，结果模型待阶段 2 重构（见 `docs/notes/TODO.md`）。
+
 ## v0.1.0 - 2026-07-06
 
 ### Added
