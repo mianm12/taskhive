@@ -14,8 +14,7 @@
 - **可见性在领域模型里的应用**：
   阶段 0 已记过基本规则，这里落到 `task` 包：`Task`、`Status`、`Transition()` 要给 `runner` 编排执行流时调用，所以导出；`runOnce()` 是执行器内部细节，所以保持小写。
 - **自定义类型 `type Status string`**：
-  创建一个底层是 string 但不等于 string 的新类型，带来类型安全
-  （不能把裸字符串误传进要求 Status 的地方）。和 struct（多字段打包）是两种建模手段。
+  创建一个底层是 `string` 但不等于 `string` 的新类型，带来类型安全：不能把裸字符串误传进要求 `Status` 的地方。它和 `struct`（多字段打包）是两种建模手段；互转必须显式写 `Status(x)` 或 `string(x)`。
 - **const 枚举**：
   Go 没有 enum，用一组 const 常量模拟。命名惯例用类型名做前缀（`StatusPending`），
   IDE 补全友好。
@@ -34,6 +33,8 @@
 
 - **error 是值，不是异常**：
   用返回值处理，`if err != nil` 显式检查。Go 几乎不用 panic。
+- **`error` vs `panic` 的分界**：
+  外部输入、IO 和运行环境导致的失败一律返回 `error`；`panic` 只用于“不变量被违反”这类代码 bug。像 `runner.RunAll()` 里 `Running` 到终态迁移失败这种理论不可达路径，可用 `unreachable:` 前缀标注断言式 `panic`。
 - **哨兵错误做成包级 Err 变量**：
   `var ErrInvalidTransition = errors.New(...)`，命名 Err 开头。
   这样调用方能用 errors.Is 识别“是不是这种错误”。每次现造 error 就没法识别了。
@@ -78,6 +79,7 @@
 
 - **`encoding/json` 与结构体标签**：
   结构体标签（struct tag）`json:"id"` 做 JSON 和字段名的映射；`Unmarshal(data, &v)` 传地址（同 `errors.As` 模式）；只有导出字段能被序列化。
+  自定义类型实现 `UnmarshalJSON([]byte) error` 后，`json.Unmarshal` 会调用它；内部再把原始 `[]byte` 解成 `string`，可复用标准库的去引号、转义和类型校验。
 - **`cobra` 命令树**：
   `cobra` 用命令树组织 CLI；`Run` 和 `RunE` 区分是否返回 error；flag 用 `StringVarP` 定义。这是项目第一个第三方依赖，`go.sum` 首次生成用于锁定校验和。
 - **slice 与地址语义**：

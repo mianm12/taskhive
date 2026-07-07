@@ -9,9 +9,12 @@
 
 ## 阶段 2 回来清
 
-- [ ] `RunAll` 结果表达重构：`executor.Result` 无法表达“迁移失败未执行”的情况
-      （语义错配，`Err` 丢失）。方向：`runner` 层定义 `TaskResult`，用
-      `*executor.Result == nil` 表达“未执行”。见 `runner.go` 的 `FIXME`。
+- [ ] **`RunAll` 结果表达重构**：
+      `executor.Result` 无法表达“迁移失败未执行”的情况
+      （语义错配，报表失败行已临时显示错误）。方向：`runner` 层定义 `TaskResult`，用
+      `*executor.Result == nil` 表达“未执行”。见 `internal/runner/runner.go` 的 `FIXME`。
+- [ ] **完善 `Duration` 类型**：
+      补 `Duration` 的 `MarshalJSON()`，让 `timeout` 序列化回 `"30s"` 而非纳秒数字。
 
 ## 阶段 3（并发）回来清
 
